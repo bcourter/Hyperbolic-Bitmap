@@ -3,8 +3,12 @@ var p = 5;
 var q = 4;
 var maxIterations = 16;
 
+var targetLowerLeft = new Complex (-1, -1);
+var targetUpperRight = new Complex (1, 1);
+var targetSpan = Complex.subtract(targetUpperRight, targetLowerLeft);
+
 var width = 128;
-var height = width;
+var height = Math.floor(width / targetSpan.re * targetSpan.im);
 
 var region = new Region(p, q);
 var circleInversion = region.c.asMobius();
@@ -29,7 +33,7 @@ function update() {
 	var p1t = region.p1.transform(fundamentalTrans);
 	var p2t = region.p2.transform(fundamentalTrans);
 
-	sourceCtx.strokeStyle = "#00FF33";
+	sourceCtx.strokeStyle = "#00AA33";
 	sourceCtx.beginPath();
 	sourceCtx.moveTo(p0t.re, p0t.im);
 	sourceCtx.lineTo(p1t.re, p1t.im);
@@ -55,7 +59,7 @@ function update() {
 	for (var j = 0; j < height; j++) {
 		console.log("row" +j + "/" + height);
 		for (var i = 0; i < width; i++) { //setInterval(function() {
-			var z = new Complex(i/width, j/height);
+			var z = new Complex(targetLowerLeft.re + i / width * targetSpan.re, targetLowerLeft.im + j / height * targetSpan.im);
 			z = reversePixelLookup(z);
 
 			var data;
