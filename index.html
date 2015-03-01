@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <title>Hyperbolic Bitmap</title>
-    <link rel="stylesheet" href="HyperbolicbBitmap.css" />
+    <link rel="stylesheet" href="HyperbolicBitmap.css" />
 </head>
 <body>
     <div id="toolbar">
@@ -12,8 +12,15 @@
             <input type="button" id='saveImage' />
             Save Image
         </label>
+        <label>
+        <input type="button" id='update' />
+            Update
+        </label>
     </div>
 
+    <image id="sourceImage" src="Vitaminwater-small.png"  > 
+    <canvas id="sourceCanvas"> </canvas>
+    <canvas id="destCanvas"> </canvas>
 
     <script src="js/three/three.js"></script>
     <script src="js/three/controls/OrbitControls.js"></script>
