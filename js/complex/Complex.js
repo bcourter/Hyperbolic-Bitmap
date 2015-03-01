@@ -275,6 +275,10 @@ Mobius.createRotation = function(phi) {
 	return new Mobius(Complex.createPolar(1, phi), Complex.zero, Complex.zero, Complex.one);
 };
 
+Mobius.createScale = function(s) {
+	return new Mobius(new Complex(s, 0), Complex.zero, Complex.zero, Complex.one);
+};
+
 Mobius.prototype.inverse = function() {
 	return new Mobius(this.d, this.b.negative(), this.c.negative(), this.a);
 };

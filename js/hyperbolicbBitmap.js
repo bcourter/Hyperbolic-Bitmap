@@ -1,9 +1,9 @@
 
-var p = 7;
-var q = 3;
+var p = 5;
+var q = 4;
 var maxIterations = 16;
 
-var width = 256;
+var width = 128;
 var height = width;
 
 var region = new Region(p, q);
@@ -20,10 +20,33 @@ function update() {
 	console.log("drawing image...");
 	sourceCtx.drawImage(image, 0, 0, image.width, image.height);
 
+	var scale = Mobius.createScale(image.height * 3);
+	var translation = Mobius.createTranslation(new Complex(10, 10));
+	var fundamentalTrans = Mobius.multiply(translation, scale);
+//	var fundamentalTrans = scale
+
+	var p0t = region.p0.transform(fundamentalTrans);
+	var p1t = region.p1.transform(fundamentalTrans);
+	var p2t = region.p2.transform(fundamentalTrans);
+
+	sourceCtx.strokeStyle = "#00FF33";
+	sourceCtx.beginPath();
+	sourceCtx.moveTo(p0t.re, p0t.im);
+	sourceCtx.lineTo(p1t.re, p1t.im);
+	
+	var arcCount = 6;
+	for (var i = 1; i < arcCount; i++) {
+		var p = Complex.subtract(p1t, Complex.createPolar(region.r, Math.PI * (1 - 1/p)));
+		sourceCtx.lineTo(p.re, p.im);
+	}
+
+	sourceCtx.lineTo(p2t.re, p2t.im);
+	sourceCtx.lineTo(p0t.re, p0t.im);
+	sourceCtx.stroke();
+
 	var destC = document.getElementById("destCanvas");
 	var destCtx = destC.getContext("2d");
-	// destCtx.fillStyle = "#FF0000";
-	// destCtx.fillRect(0,0,150,75);
+	
 	destC.width = width;
 	destC.height = height;
 
@@ -40,7 +63,7 @@ function update() {
 				data = [0, 0, 0, 0];
 			}
 			else {
-				var p = z.scale(image.height);
+				var p = z.transform(fundamentalTrans);
 				var p00 = new Complex(
 					Math.min(Math.floor(p.re), image.width-1),
 					Math.min(Math.floor(p.im), image.height-1)
