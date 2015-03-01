@@ -210,6 +210,12 @@ Complex.prototype.toVector3 = function() {
 	return new THREE.Vector3(this.re, this.im, 0);
 };
 
+Complex.prototype.clean = function() {
+	return new Complex(
+		isNaN(this.re) ? 0 : this.re,
+		isNaN(this.im) ? 0 : this.im
+		);
+};
 
 function Mobius(a, b, c, d) {
 /*	var det = Complex.subtract(

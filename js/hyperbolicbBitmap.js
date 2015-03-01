@@ -7,11 +7,18 @@ var targetLowerLeft = new Complex (-1, -1);
 var targetUpperRight = new Complex (1, 1);
 var targetSpan = Complex.subtract(targetUpperRight, targetLowerLeft);
 
-var width = 128;
+var width = 64;
 var height = Math.floor(width / targetSpan.re * targetSpan.im);
 
 var region = new Region(p, q);
 var circleInversion = region.c.asMobius();
+
+var toHalfPlane = new Mobius(Complex.i, Complex.i, Complex.one, Complex.one.negative());
+var fromHalfPlane = new Mobius(Complex.one, Complex.i.negative(), Complex.one, Complex.i);
+var automorphism = Mobius.createDiscAutomorphism(new Complex(0.2, 0.3), 0);
+var analyticTrans = fromHalfPlane;
+//analyticTrans = analyticTrans.inverse();
+
 update();
 
 function update() {
@@ -60,6 +67,8 @@ function update() {
 		console.log("row" +j + "/" + height);
 		for (var i = 0; i < width; i++) { //setInterval(function() {
 			var z = new Complex(targetLowerLeft.re + i / width * targetSpan.re, targetLowerLeft.im + j / height * targetSpan.im);
+			z = z.transform(analyticTrans);
+			z = z.clean();
 			z = reversePixelLookup(z);
 
 			var data;
@@ -147,7 +156,7 @@ function rotateInto(z) {
 	var upper = Math.PI / p;
 	var lower = -Math.PI / p;
 	var rot = Complex.createPolar(1, 2 * Math.PI / p);
-	while (z.argument() >= upper || z.argument() < lower) {
+	while (z.argument() > upper || z.argument() < lower) {
 		z = Complex.multiply(z, rot);
 	}
 
