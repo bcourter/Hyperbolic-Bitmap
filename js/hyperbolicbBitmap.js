@@ -3,8 +3,8 @@ var p = 7;
 var q = 3;
 var maxIterations = 16;
 
-var width = 64;
-var height = 64;
+var width = 256;
+var height = width;
 
 var region = new Region(p, q);
 var circleInversion = region.c.asMobius();
@@ -31,13 +31,14 @@ function update() {
 
 	for (var j = 0; j < height; j++) {
 		console.log("row" +j + "/" + height);
-		for (var i = 0; i < width; i++) {
+		for (var i = 0; i < width; i++) { //setInterval(function() {
 			var z = new Complex(i/width, j/height);
-	//		z = reversePixelLookup(z);
+			z = reversePixelLookup(z);
 
 			var data;
-			if (z == null)
+			if (z == null) {
 				data = [0, 0, 0, 0];
+			}
 			else {
 				var p = z.scale(image.height);
 				var p00 = new Complex(
@@ -49,10 +50,10 @@ function update() {
 				var p01 = new Complex(p00.re, p00.im+1);
 				var p11 = new Complex(p00.re+1, p00.im+1);
 
-				var data00 = readData(p00)
-				var data10 = readData(p10)
-				var data01 = readData(p01)
-				var data11 = readData(p11)
+				var data00 = readData(p00);
+				var data10 = readData(p10);
+				var data01 = readData(p01);
+				var data11 = readData(p11);
 
 				data = [
 			 		bilinear(p.re, p.im, p00.re, p00.im, p11.re, p11.im, data00[0], data10[0], data01[0], data11[0]),
@@ -63,7 +64,7 @@ function update() {
 			}
 
 			drawData(destCtx, i, j, data);
-		}
+		}  //, 1000/5); }
 	}
 
 	console.log("done");
@@ -88,21 +89,28 @@ function bilinear(x, y, x1, y1, x2, y2, d11, d21, d12, d22) {
 }
 
 function reversePixelLookup(z) {
+	if (z.modulusSquared() >= 1.0){
+		return null;
+	}
+
 	for (var i=0; i<maxIterations; i++) {
 		// rotate into region [-PI/p, PI/p]
 		z = rotateInto(z);
-		if (inFundamentalRegion(z)) 
+		if (inFundamentalRegion(z)) {
 			return z;
+		}
 
 		// reflect over line y=0
 		z.im = -z.im;
-		if (inFundamentalRegion(z)) 
+		if (inFundamentalRegion(z)) {
 			return z;
+		}
 
 		// reflect over circle C
-		z = invert(z, C);
-		if (inFundamentalRegion(z)) 
+		z = z.transform(circleInversion);
+		if (inFundamentalRegion(z)) {
 			return z;
+		}
 	}
 
 	return null;
@@ -125,14 +133,18 @@ function invert(z) {
 }
 
 function inFundamentalRegion(z){
-	if (y < 0)
+	if (z.im < 0) {
 		return false;
+	}
 
-	if (z.argument() > Math.PI / p)
+	if (z.argument() > Math.PI / p) {
 		return false;
+	}
 
-	if (region.c.containsPoint(z))
+	var dist = new Complex(z.re - region.d, z.im).modulus();
+	if (dist < region.r) {
 		return false;
+	}
 
 	return true;
 }

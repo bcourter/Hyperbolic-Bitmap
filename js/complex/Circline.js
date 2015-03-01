@@ -39,7 +39,7 @@ Circline.prototype.transform = function(mobius) {
 };
 
 Circline.prototype.equals = function(circline) {
-	return accuracy.lengthEquals(this.a, circline.a) && Complex.equals(this.b, circline.b) && accuracy.lengthEquals(c, circline.c);
+	return Accuracy.lengthEquals(this.a, circline.a) && Complex.equals(this.b, circline.b) && Accuracy.lengthEquals(c, circline.c);
 };
 
 Circline.prototype.isPointOnLeft = function(point) {
@@ -48,7 +48,7 @@ Circline.prototype.isPointOnLeft = function(point) {
 };
 
 Circline.prototype.containsPoint = function(point) {
-	return accuracy.lengthIsZero(this.a * point.ModulusSquared + Complex.add(Complex.multiply(this.b.conjugate(), point) , 			Complex.multiply(this.b , point.conjugate)).re + c);
+	return Accuracy.lengthIsZero(this.a * point.modulusSquared() + Complex.add(Complex.multiply(this.b.conjugate(), point) , Complex.multiply(this.b , point.conjugate())).re + this.c);
 };
 
 Circline.prototype.arePointsOnSameSide = function(p1, p2) {
@@ -91,7 +91,7 @@ Circle.prototype.radius = function() {
 };
 
 Circle.prototype.inverse = function() {
-	if (accuracy.lengthIsZero((this.center().modulusSquared() - this.radiusSquared()))) {
+	if (Accuracy.lengthIsZero((this.center().modulusSquared() - this.radiusSquared()))) {
 		return new Line(this.b.negative().conjugate(), 1);
 	}
 
@@ -137,7 +137,7 @@ Line.createPointAngle = function(point, angle) {
 };
 	
 Line.prototype.inverse = function() {
-	if (accuracy.lengthIsZero(c)) {  
+	if (Accuracy.lengthIsZero(c)) {  
 		return new Line(this.b.conjugate(), 0);
 	}
 
