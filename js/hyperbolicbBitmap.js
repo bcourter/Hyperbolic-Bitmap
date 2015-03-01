@@ -7,6 +7,8 @@ function update() {
 	var sourceCtx = sourceC.getContext("2d");
 	sourceC.width = image.width;
 	sourceC.height = image.height;
+
+	console.log("drawing image...");
 	sourceCtx.drawImage(image, 0, 0, image.width, image.height);
 
 	var p = 7;
@@ -22,16 +24,27 @@ function update() {
 	destC.width = width;
 	destC.height = height;
 
+	console.log("sampling...");
+
 	for (var i = 0; i < width; i++) {
 		for (var j = 0; j < height; j++) {
 			var z = new Complex(i/width, j/height);
 			//x = reversePixelLookup(z);
 
 			var data = sourceCtx.getImageData(i, j, 1, 1).data;
-			destCtx.fillStyle = "rgb(" + data[0] + ", " + data[1] + ", " + data[2] + ")";
-			destCtx.fillRect(i, j, 1, 1);
+
+
+			drawData(destCtx, i, j, data);
 		}
 	}
+
+	console.log("done");
+
+}
+
+function drawData(ctx, i, j, data){
+	ctx.fillStyle = "rgb(" + data[0] + ", " + data[1] + ", " + data[2] + ")";
+	ctx.fillRect(i, j, 1, 1);
 }
 
 function reversePixelLookup(z) {
