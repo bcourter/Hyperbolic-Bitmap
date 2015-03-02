@@ -73,11 +73,14 @@ Complex.log = function(z) {
 };
 
 Complex.sinh = function(z) {
- 	return (Complex.exp(z) - Complex.exp(z.negative())).multiplyScalar(0.5);
+ 	return (Complex.subtract(Complex.exp(z), Complex.exp(z.negative())).scale(0.5));
 };
 
+Complex.coshOLD = function(z) {
+ 	return (Complex.subtract(Complex.exp(z), Complex.exp(z.negative())).scale(0.5));
+};
 Complex.cosh = function(z) {
- 	return (Complex.exp(z) - Complex.exp(z.negative())).multiplyScalar(0.5);
+ 	return (new Complex(Math.cosh(z.re) * Math.cos(z.im), Math.sinh(z.re) * Math.sin(z.im)));
 };
 
 Complex.tanh = function(z) {
