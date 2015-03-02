@@ -4,12 +4,12 @@ var q = 4;
 var maxIterations = 16;
 
 var targetLowerLeft = new Complex (0, 0);
-var targetUpperRight = new Complex (4, 3.2);
+var targetUpperRight = new Complex (3.5, 3.2);
 // var targetLowerLeft = new Complex (-1, -1);
 // var targetUpperRight = new Complex (1, 1);
 var targetSpan = Complex.subtract(targetUpperRight, targetLowerLeft);
 
-var width = 128;
+var width = 1024;
 var height = Math.floor(width / targetSpan.re * targetSpan.im);
 
 var region = new Region(p, q);
@@ -71,8 +71,11 @@ function update() {
 
 	console.log("sampling...");
 
+	var start = new Date();
 	for (var j = 0; j < height; j++) {
-		console.log("row" +j + "/" + height);
+		var elapsed = new Date() - start;
+		var estimate = elapsed / i * (height-1)
+		console.log("row " + j + "/" + (height-1) + "  remain: " + estimate / 1000);
 		for (var i = 0; i < width; i++) { //setInterval(function() {
 			var z = new Complex(targetLowerLeft.re + i / width * targetSpan.re, targetLowerLeft.im + j / height * targetSpan.im);
 			z = Complex.cosh(z);
